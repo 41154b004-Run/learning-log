@@ -1,0 +1,504 @@
+/* ========================================================
+   我的學習紀錄 (My Learning Records) - 樣式表
+   設計精神：手機優先、簡約乾淨、現代卡片式風格
+   ======================================================== */
+
+:root {
+  --primary-color: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-light: #eff6ff;
+  --danger-color: #dc2626;
+  --danger-hover: #b91c1c;
+  --danger-light: #fef2f2;
+  --text-main: #1f2937;
+  --text-muted: #6b7280;
+  --text-light: #9ca3af;
+  --bg-body: #f8fafc;
+  --bg-card: #ffffff;
+  --border-color: #e2e8f0;
+  --border-radius-sm: 6px;
+  --border-radius: 10px;
+  --border-radius-lg: 16px;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --transition: all 0.2s ease-in-out;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  background-color: var(--bg-body);
+  color: var(--text-main);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 應用程式主容器 */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* 頂部導覽列 */
+.app-header {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1.5rem;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-icon {
+  font-size: 1.75rem;
+}
+
+.app-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.user-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-email {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 全域通知 Banner */
+.message-banner {
+  padding: 0.75rem 1rem;
+  border-radius: var(--border-radius);
+  margin-bottom: 1.25rem;
+  font-size: 0.925rem;
+  line-height: 1.4;
+  animation: fadeIn 0.3s ease;
+}
+
+.message-banner.info {
+  background-color: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+}
+
+.message-banner.success {
+  background-color: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.message-banner.error {
+  background-color: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+/* 卡片基礎容器 */
+.card {
+  background-color: var(--bg-card);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.card-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text-main);
+}
+
+/* 驗證卡片 (登入/註冊) */
+.auth-card {
+  max-width: 440px;
+  margin: 2rem auto;
+}
+
+.auth-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1.5rem;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 0.75rem 0.5rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.tab-btn:hover {
+  color: var(--primary-color);
+}
+
+.tab-btn.active {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+  font-weight: 600;
+}
+
+/* 表單元件 */
+.form-group {
+  margin-bottom: 1.15rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 0.35rem;
+}
+
+.form-group label .required {
+  color: var(--danger-color);
+}
+
+.form-group label .optional {
+  color: var(--text-muted);
+  font-weight: 400;
+  font-size: 0.8rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.col-half {
+  flex: 1;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.95rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  background-color: #ffffff;
+  color: var(--text-main);
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 70px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+/* 按鈕樣式 (好按防誤觸，符合手機點擊區域) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: var(--transition);
+  min-height: 42px;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: #ffffff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+}
+
+.btn-secondary {
+  background-color: #f1f5f9;
+  color: var(--text-muted);
+  border-color: var(--border-color);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: #e2e8f0;
+  color: var(--text-main);
+}
+
+.btn-danger {
+  background-color: var(--danger-color);
+  color: #ffffff;
+}
+
+.btn-outline-danger {
+  background-color: transparent;
+  color: var(--danger-color);
+  border-color: #fca5a5;
+}
+
+.btn-outline-danger:hover:not(:disabled) {
+  background-color: var(--danger-light);
+  border-color: var(--danger-color);
+}
+
+.btn-sm {
+  min-height: 32px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* 歷史紀錄列表區 */
+.records-container {
+  margin-top: 1.5rem;
+}
+
+.records-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  background-color: #e0e7ff;
+  color: #3730a3;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 9999px;
+}
+
+.state-message {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+}
+
+.empty-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e2e8f0;
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 0.75rem auto;
+}
+
+/* 學習紀錄卡片 */
+.records-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.record-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  position: relative;
+}
+
+.record-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: var(--shadow);
+}
+
+.record-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px dashed var(--border-color);
+}
+
+.record-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.record-date {
+  font-weight: 700;
+  color: var(--primary-color);
+  font-size: 0.95rem;
+}
+
+.record-duration {
+  font-size: 0.825rem;
+  background-color: #f3f4f6;
+  color: #4b5563;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* 純文字安全呈現 */
+.record-body {
+  margin-bottom: 0.75rem;
+}
+
+.record-content-text {
+  font-size: 0.975rem;
+  color: var(--text-main);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.record-obstacle-box {
+  margin-top: 0.65rem;
+  padding: 0.65rem 0.85rem;
+  background-color: #fffbeb;
+  border-left: 3px solid #f59e0b;
+  border-radius: 4px;
+}
+
+.record-obstacle-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #b45309;
+  margin-bottom: 0.2rem;
+}
+
+.record-obstacle-text {
+  font-size: 0.875rem;
+  color: #78350f;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* 頁尾 */
+.app-footer {
+  margin-top: auto;
+  padding: 2rem 0 1.5rem 0;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+/* 工具類別與動畫 */
+.hidden {
+  display: none !important;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 手機螢幕調適 (< 560px) */
+@media (max-width: 560px) {
+  .app-container {
+    padding: 0 0.75rem;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .user-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .card {
+    padding: 1.15rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+  }
+}

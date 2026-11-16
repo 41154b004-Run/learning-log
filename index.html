@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的學習紀錄 - My Learning Records</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Supabase JS v2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- 頂部導覽列 -->
+    <header class="app-header">
+      <div class="header-content">
+        <div class="logo-area">
+          <span class="logo-icon">📖</span>
+          <h1 class="app-title">我的學習紀錄</h1>
+        </div>
+        <div id="user-controls" class="user-controls hidden">
+          <span id="user-email-display" class="user-email"></span>
+          <button id="btn-logout" class="btn btn-outline-danger btn-sm" type="button">登出</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 全域通知訊息列 -->
+    <div id="global-message" class="message-banner hidden" role="alert"></div>
+
+    <main class="main-content">
+      <!-- 訪客驗證區塊 (登入 / 註冊) -->
+      <section id="auth-section" class="card auth-card">
+        <div class="auth-tabs">
+          <button id="tab-login" class="tab-btn active" type="button">登入帳號</button>
+          <button id="tab-register" class="tab-btn" type="button">註冊新帳號</button>
+        </div>
+
+        <form id="auth-form" class="auth-form">
+          <div class="form-group">
+            <label for="auth-email">電子郵件 (Email)</label>
+            <input 
+              type="email" 
+              id="auth-email" 
+              class="form-input" 
+              placeholder="example@mail.com" 
+              required 
+              autocomplete="email"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="auth-password">密碼</label>
+            <input 
+              type="password" 
+              id="auth-password" 
+              class="form-input" 
+              placeholder="至少 6 位字元" 
+              required 
+              minlength="6"
+              autocomplete="current-password"
+            >
+          </div>
+
+          <button id="auth-submit-btn" class="btn btn-primary btn-block" type="submit">
+            立即登入
+          </button>
+        </form>
+      </section>
+
+      <!-- 登入後的主介面 (新增紀錄 + 紀錄列表) -->
+      <section id="dashboard-section" class="dashboard-section hidden">
+        <!-- 新增學習紀錄表單卡片 -->
+        <div class="card form-card">
+          <h2 class="card-title">新增學習紀錄</h2>
+          <form id="record-form" class="record-form">
+            <div class="form-row">
+              <div class="form-group col-half">
+                <label for="record-date">學習日期 <span class="required">*</span></label>
+                <input type="date" id="record-date" class="form-input" required>
+              </div>
+
+              <div class="form-group col-half">
+                <label for="record-duration">學習時間 (分鐘) <span class="required">*</span></label>
+                <input 
+                  type="number" 
+                  id="record-duration" 
+                  class="form-input" 
+                  placeholder="例如：60" 
+                  min="1" 
+                  step="1" 
+                  required
+                >
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="record-content">今日學習內容 <span class="required">*</span></label>
+              <textarea 
+                id="record-content" 
+                class="form-textarea" 
+                rows="3" 
+                placeholder="記錄今天學了什麼、掌握了哪些技巧..." 
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="record-obstacles">遇到的卡點 / 延伸思考 <span class="optional">(選填)</span></label>
+              <textarea 
+                id="record-obstacles" 
+                class="form-textarea" 
+                rows="2" 
+                placeholder="記錄遇到的 Bug、未解問題或心得..."
+              ></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button id="btn-save-record" class="btn btn-primary" type="submit">儲存紀錄</button>
+              <button id="btn-reset-record" class="btn btn-secondary" type="reset">清空欄位</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- 學習紀錄清單 -->
+        <div class="records-container">
+          <div class="records-header">
+            <h2 class="card-title">我的歷史紀錄</h2>
+            <span id="records-count" class="badge">共 0 筆</span>
+          </div>
+
+          <!-- 載入狀態 -->
+          <div id="records-loading" class="state-message">
+            <div class="spinner"></div>
+            <p>正在載入學習紀錄...</p>
+          </div>
+
+          <!-- 無紀錄提示 -->
+          <div id="records-empty" class="state-message hidden">
+            <p class="empty-icon">🌱</p>
+            <p>目前尚無學習紀錄，在上方新增你的第一筆紀錄吧！</p>
+          </div>
+
+          <!-- 紀錄列表 (動態渲染) -->
+          <div id="records-list" class="records-list"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 頁尾 -->
+    <footer class="app-footer">
+      <p>My Learning Records &bull; 結合 Supabase 嚴密 RLS 資料保護</p>
+    </footer>
+  </div>
+
+  <!-- 引入設定檔與主要邏輯腳本 -->
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
