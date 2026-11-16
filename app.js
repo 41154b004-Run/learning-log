@@ -42,7 +42,11 @@ const dom = {
   recordsList: document.getElementById('records-list'),
   recordsLoading: document.getElementById('records-loading'),
   recordsEmpty: document.getElementById('records-empty'),
-  recordsCount: document.getElementById('records-count')
+  recordsCount: document.getElementById('records-count'),
+
+  // 近 7 天統計
+  stat7DaysMinutes: document.getElementById('stat-7days-minutes'),
+  stat7DaysCount: document.getElementById('stat-7days-count')
 };
 
 // 驗證狀態模式：'login' | 'register'
@@ -132,6 +136,7 @@ function handleAuthChange(user) {
     dom.userControls.classList.add('hidden');
     dom.userEmailDisplay.textContent = '';
     dom.recordsList.innerHTML = '';
+    update7DaysStats([]);
   }
 }
 
@@ -253,6 +258,9 @@ async function loadLearningLogs() {
 function renderRecords(records) {
   dom.recordsList.innerHTML = '';
   dom.recordsCount.textContent = `共 ${records.length} 筆`;
+
+  // 更新近 7 天統計
+  update7DaysStats(records);
 
   if (records.length === 0) {
     dom.recordsEmpty.classList.remove('hidden');
@@ -424,20 +432,57 @@ async function handleDeleteRecord(recordId) {
       showMessage('刪除失敗：' + error.message, 'error');
     } else {
       showMessage('紀錄已成功刪除。', 'info');
-      // 從畫面上移除該卡片
-      const targetCard = dom.recordsList.querySelector(`[data-id="${recordId}"]`);
-      if (targetCard) {
-        targetCard.remove();
-      }
-      // 重新更新筆數或重新查詢
-      const remainingCards = dom.recordsList.querySelectorAll('.record-card').length;
-      dom.recordsCount.textContent = `共 ${remainingCards} 筆`;
-      if (remainingCards === 0) {
-        dom.recordsEmpty.classList.remove('hidden');
-      }
+      // 重新載入清單與近 7 天統計
+      await loadLearningLogs();
     }
   } catch (err) {
     showMessage('刪除時發生未知錯誤：' + err.message, 'error');
+  }
+}
+
+// 計算並更新近 7 天統計數據 (以日期欄位為準：今日與前 6 天；未填分鐘數以 0 計算)
+function update7DaysStats(records) {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  
+  // 6 天前的起始日期物件 (共涵蓋今日 + 前 6 天 = 7 天)
+  const sevenDaysAgo = new Date(today);
+  sevenDaysAgo.setDate(today.getDate() - 6);
+
+  const formatDateStr = (d) => {
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
+  const todayStr = formatDateStr(today);
+  const sevenDaysAgoStr = formatDateStr(sevenDaysAgo);
+
+  let totalMinutes = 0;
+  let totalEntries = 0;
+
+  if (Array.isArray(records)) {
+    records.forEach(item => {
+      const rawDate = item.log_date || item.learning_date || (item.created_at ? item.created_at.split('T')[0] : '');
+      if (!rawDate) return;
+      const dateStr = rawDate.slice(0, 10);
+
+      // 判斷是否落在此 7 天區間 (包含今天與前 6 天)
+      if (dateStr >= sevenDaysAgoStr && dateStr <= todayStr) {
+        totalEntries += 1;
+        // 未填寫或無效分鐘數以 0 計算
+        const mins = Number(item.minutes ?? item.duration_minutes) || 0;
+        totalMinutes += (mins > 0 ? mins : 0);
+      }
+    });
+  }
+
+  if (dom.stat7DaysMinutes) {
+    dom.stat7DaysMinutes.textContent = `${totalMinutes} 分鐘`;
+  }
+  if (dom.stat7DaysCount) {
+    dom.stat7DaysCount.textContent = `${totalEntries} 次`;
   }
 }
 

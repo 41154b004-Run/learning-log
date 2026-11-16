@@ -7,6 +7,54 @@
   <link rel="stylesheet" href="style.css">
   <!-- Supabase JS v2 CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* 近 7 天學習統計小卡 */
+    .stats-card {
+      margin-bottom: 1.25rem;
+      padding: 1rem 1.25rem;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+    }
+    .stats-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .stats-grid {
+      display: flex;
+      gap: 1rem;
+    }
+    .stat-item {
+      flex: 1;
+      background-color: #ffffff;
+      padding: 0.75rem 1rem;
+      border-radius: var(--border-radius-sm);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+    }
+    .stat-label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+    .stat-value {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    @media (max-width: 560px) {
+      .stats-grid {
+        flex-direction: column;
+        gap: 0.6rem;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="app-container">
@@ -123,6 +171,21 @@
 
         <!-- 學習紀錄清單 -->
         <div class="records-container">
+          <!-- 近 7 天學習統計摘要 -->
+          <div id="stats-container" class="stats-card">
+            <h3 class="stats-title">📊 近 7 天學習概況 (含今日與前 6 天)</h3>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <span class="stat-label">累積學習時長</span>
+                <span id="stat-7days-minutes" class="stat-value">0 分鐘</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">完成學習紀錄</span>
+                <span id="stat-7days-count" class="stat-value">0 次</span>
+              </div>
+            </div>
+          </div>
+
           <div class="records-header">
             <h2 class="card-title">我的歷史紀錄</h2>
             <span id="records-count" class="badge">共 0 筆</span>
