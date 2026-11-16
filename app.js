@@ -234,7 +234,6 @@ async function loadLearningLogs() {
     const { data, error } = await supabaseClient
       .from('learning_logs')
       .select('*')
-      .order('learning_date', { ascending: false })
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -263,6 +262,12 @@ function renderRecords(records) {
   dom.recordsEmpty.classList.add('hidden');
 
   records.forEach(item => {
+    // 兼容量測欄位名稱 (支援 log_date / learning_date, topic / content, minutes / duration_minutes, note / obstacles)
+    const dateVal = item.log_date || item.learning_date || (item.created_at ? item.created_at.split('T')[0] : '');
+    const topicVal = item.topic || item.content || '';
+    const minutesVal = item.minutes ?? item.duration_minutes ?? 0;
+    const noteVal = item.note || item.obstacles || '';
+
     // 建立卡片外框
     const card = document.createElement('div');
     card.className = 'record-card';
@@ -277,11 +282,11 @@ function renderRecords(records) {
 
     const dateSpan = document.createElement('span');
     dateSpan.className = 'record-date';
-    dateSpan.textContent = `📅 ${item.learning_date}`;
+    dateSpan.textContent = `📅 ${dateVal}`;
 
     const durationSpan = document.createElement('span');
     durationSpan.className = 'record-duration';
-    durationSpan.textContent = `⏱️ ${item.duration_minutes} 分鐘`;
+    durationSpan.textContent = `⏱️ ${minutesVal} 分鐘`;
 
     metaBox.appendChild(dateSpan);
     metaBox.appendChild(durationSpan);
@@ -304,11 +309,11 @@ function renderRecords(records) {
     const contentText = document.createElement('p');
     contentText.className = 'record-content-text';
     // 純文字賦值
-    contentText.textContent = item.content;
+    contentText.textContent = topicVal;
     bodyBox.appendChild(contentText);
 
     // 卡點 / 筆記 (若有填寫才顯示)
-    if (item.obstacles && item.obstacles.trim()) {
+    if (noteVal && noteVal.trim()) {
       const obstacleBox = document.createElement('div');
       obstacleBox.className = 'record-obstacle-box';
 
@@ -319,7 +324,7 @@ function renderRecords(records) {
       const obstacleText = document.createElement('p');
       obstacleText.className = 'record-obstacle-text';
       // 純文字賦值
-      obstacleText.textContent = item.obstacles;
+      obstacleText.textContent = noteVal;
 
       obstacleBox.appendChild(obstacleTitle);
       obstacleBox.appendChild(obstacleText);
@@ -353,18 +358,36 @@ async function handleRecordSubmit(e) {
   setRecordSubmitting(true);
 
   try {
-    const payload = {
+    // 優先使用 Supabase 現有資料庫欄位 (log_date, topic, minutes, note)
+    const payloadPrimary = {
       user_id: currentUser.id,
-      learning_date: date,
-      duration_minutes: duration,
-      content: content,
-      obstacles: obstacles || null
+      log_date: date,
+      topic: content,
+      minutes: duration,
+      note: obstacles || null
     };
 
-    const { data, error } = await supabaseClient
+    let { data, error } = await supabaseClient
       .from('learning_logs')
-      .insert([payload])
+      .insert([payloadPrimary])
       .select();
+
+    // 若因欄位名稱不同 (PGRST204) 失敗，自動嘗試備用欄位名
+    if (error && error.code === 'PGRST204') {
+      const payloadFallback = {
+        user_id: currentUser.id,
+        learning_date: date,
+        content: content,
+        duration_minutes: duration,
+        obstacles: obstacles || null
+      };
+      const fallbackResult = await supabaseClient
+        .from('learning_logs')
+        .insert([payloadFallback])
+        .select();
+      data = fallbackResult.data;
+      error = fallbackResult.error;
+    }
 
     if (error) {
       showMessage('儲存紀錄失敗：' + error.message, 'error');
